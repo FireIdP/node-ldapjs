@@ -1,6 +1,7 @@
 'use strict'
 
 const net = require('net')
+const os = require('os')
 const tap = require('tap')
 const vasync = require('vasync')
 const vm = require('node:vm')
@@ -64,6 +65,18 @@ tap.test('properties', function (t) {
 })
 
 tap.test('IPv6 URL is formatted correctly', function (t) {
+  // some systems do not support ipv6 properly.
+  const interfaces = os.networkInterfaces()
+  const hasIPv6Loopback = Object.values(interfaces)
+    .flat()
+    .some(i => i.address === '::1')
+
+  if (hasIPv6Loopback === false) {
+    t.skip('system does not support ipv6')
+    t.end()
+    return
+  }
+
   const server = ldap.createServer()
   t.equal(server.url, null, 'url empty before bind')
   server.listen(0, '::1', function () {
