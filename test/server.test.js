@@ -67,20 +67,11 @@ tap.test('properties', function (t) {
 tap.test('IPv6 URL is formatted correctly', function (t) {
   // some systems do not support ipv6 properly.
   const interfaces = os.networkInterfaces()
-  let skip = true
-  for (const k of Object.keys(interfaces)) {
-    for (const i of interfaces[k]) {
-      if (i.address === '::1') {
-        skip = false
-        break
-      }
-    }
-    if (skip === false) {
-      break
-    }
-  }
+  const hasIPv6Loopback = Object.values(interfaces)
+    .flat()
+    .some(i => i.address === '::1')
 
-  if (skip === true) {
+  if (hasIPv6Loopback === false) {
     t.skip('system does not support ipv6')
     t.end()
     return
