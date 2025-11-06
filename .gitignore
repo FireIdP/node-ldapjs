@@ -79,5 +79,8 @@ xcuserdata
 # built docs
 /public
 
+# tap test artifacts
+.tap/
+
 .gemini/
 gha-creds-*.json
